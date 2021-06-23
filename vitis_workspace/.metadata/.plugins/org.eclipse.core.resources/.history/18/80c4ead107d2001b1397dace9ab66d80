@@ -1,0 +1,290 @@
+/* Authors:
+ * Pedro Almeida
+ * Renato Valente
+ */
+
+#include <stdio.h>
+#include "platform.h"
+#include "xparameters.h"
+#include "xaxidma.h"
+#include "xtmrctr_l.h"
+#include "xil_printf.h"
+
+/****************************** Definitions **********************************/
+
+typedef int bool;
+
+//#define min(a, b)		((a < b) ? a : b)
+
+#define N				4095
+
+#define DMA_DEVICE_ID	XPAR_AXI_DMA_0_DEVICE_ID
+
+#define SEED_VALUE		234237
+
+/*********************** DMA Configuration Function **************************/
+
+int DMAConfig(u16 dmaDeviceId, XAxiDma* pDMAInstDefs)
+{
+	XAxiDma_Config* pDMAConfig;
+	int status;
+
+	// Initialize the XAxiDma device
+	pDMAConfig = XAxiDma_LookupConfig(dmaDeviceId);
+	if (!pDMAConfig)
+	{
+		xil_printf("No DMA configuration found for %d.\r\n", dmaDeviceId);
+		return XST_FAILURE;
+	}
+
+	status = XAxiDma_CfgInitialize(pDMAInstDefs, pDMAConfig);
+	if (status != XST_SUCCESS)
+	{
+		xil_printf("DMA Initialization failed %d.\r\n", status);
+		return XST_FAILURE;
+	}
+
+	if (XAxiDma_HasSg(pDMAInstDefs))
+	{
+		xil_printf("Device configured as SG mode.\r\n");
+		return XST_FAILURE;
+	}
+
+	// Disable interrupts, we use polling mode
+	XAxiDma_IntrDisable(pDMAInstDefs, XAXIDMA_IRQ_ALL_MASK, XAXIDMA_DEVICE_TO_DMA);
+	XAxiDma_IntrDisable(pDMAInstDefs, XAXIDMA_IRQ_ALL_MASK, XAXIDMA_DMA_TO_DEVICE);
+
+	return XST_SUCCESS;
+}
+
+/************************ Auxiliar Functions *********************/
+bool primesCheck(int n){
+
+    if(n <= 1){
+        return FALSE;
+    }
+
+    if(n == 2){
+        return TRUE;
+    }
+
+    int flag = 0;
+    int i;
+    for(i = 2; i <= n/2; i++){
+        if(n % i == 0){
+            flag = 1;
+            break;
+        }
+    }
+    if (flag == 0){
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/*********************** Prime Functions *************************/
+
+void PrimesSw(int* dst, int* src, unsigned int size)
+{
+	int* p;
+	for (p = src; p < src + size; p++, dst++) {
+
+		bool temp = primesCheck(*p);
+		if (temp){      // primo -> escreve o numero
+			*dst = *p;
+		}
+		else{           // nao e primo -> escreve zero
+			*dst = 0;
+		}
+	}
+}
+
+// dst -> result of the software/hardware
+// src -> original values
+bool CheckPrimes(int* dst, int* src, unsigned int size)
+{
+	int* p;
+	for (p = src; p < src + size; p++, dst++) {
+		int res;
+		bool temp = primesCheck(*p);
+		if (temp){
+			res = *p;
+		}
+		else{
+			res = 0;
+		}
+
+		if(res != *dst){
+			xil_printf("\n res: %d    ", res);
+			xil_printf("\n *dst: %d    ", *dst);
+			xil_printf("\n *p: %d    ", *p);
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+/*****************************  Helper Functions *****************************/
+int min(int a, int b){
+	return ((a < b) ? a : b);
+}
+
+void PrintDataArray(int* pData, unsigned int size)
+{
+	int* p;
+	for(p = pData; p < pData + size; p++){
+		xil_printf("%d    ", *p);
+	}
+}
+
+int countValuesNotZero(int* pData, unsigned int size){
+	int* p;
+	int count = 0;
+	for(p = pData; p < pData + size; p++){
+		if(*p != 0){
+			count++;
+		}
+	}
+	return count;
+}
+
+int *yeetZeros(int* pData, unsigned int size, unsigned int nPrimes){
+	int array[nPrimes];
+	int* p;
+	int i = 0;
+	for(p = pData; p < pData + size; p++){
+		if(*p != 0){
+			xil_printf("\r\n *p %d.\n", *p);
+			array[i] = *p;
+			i++;
+		}
+	}
+	return array;
+}
+
+void ResetPerformanceTimer()
+{
+	XTmrCtr_Disable(XPAR_TMRCTR_0_BASEADDR, 0);
+	XTmrCtr_SetLoadReg(XPAR_TMRCTR_0_BASEADDR, 0, 0x00000001);
+	XTmrCtr_LoadTimerCounterReg(XPAR_TMRCTR_0_BASEADDR, 0);
+	XTmrCtr_SetControlStatusReg(XPAR_TMRCTR_0_BASEADDR, 0, 0x00000000);
+}
+
+void RestartPerformanceTimer()
+{
+	ResetPerformanceTimer();
+	XTmrCtr_Enable(XPAR_TMRCTR_0_BASEADDR, 0);
+}
+
+unsigned int GetPerformanceTimer()
+{
+	return XTmrCtr_GetTimerCounterReg(XPAR_TMRCTR_0_BASEADDR, 0);
+}
+
+unsigned int StopAndGetPerformanceTimer()
+{
+	XTmrCtr_Disable(XPAR_TMRCTR_0_BASEADDR, 0);
+	return GetPerformanceTimer();
+}
+
+
+/******************************  Main Functions ******************************/
+
+int main()
+{
+	int status;
+
+	XAxiDma dmaInstDefs;
+
+	int srcData[N];
+	int dstData[N];
+	int nPrimesFound;
+
+	init_platform();
+
+	unsigned int timeElapsed;
+
+
+	xil_printf("\r\nPrimes Program\n\rPedro Almeida, Renato Valente 2021\n");
+
+
+	xil_printf("\r\nFilling memory with pseudo-random data. Seed is %d.\n", 50);
+	RestartPerformanceTimer();
+
+	xil_printf("\r\nPrimes Program\n");
+
+	srand(SEED_VALUE);
+	for (int i = 0; i < N; i++)
+	{
+		srcData[i] = rand() % 256; // limitar numero gerado
+	}
+
+	timeElapsed = StopAndGetPerformanceTimer();
+	xil_printf("\n %d", timeElapsed);
+	xil_printf("\n\rMemory initialization time: %d microseconds\n\n",
+			   timeElapsed / (XPAR_CPU_M_AXI_DP_FREQ_HZ / 1000000));
+	PrintDataArray(srcData, min(20, N));
+	xil_printf("\n\r");
+
+	// Software only
+	xil_printf("\r\n----------------------------------------------------------------------\n\rSoftware only primes\n");
+	RestartPerformanceTimer();
+	PrimesSw(dstData, srcData, N);
+	timeElapsed = StopAndGetPerformanceTimer();
+	xil_printf("\n\rExecution time: %d microseconds\n",
+			   timeElapsed / (XPAR_CPU_M_AXI_DP_FREQ_HZ / 1000000));
+	PrintDataArray(dstData, min(20, 400));
+
+	nPrimesFound = countValuesNotZero(dstData, N);
+	xil_printf("\n\r Number of primes found Sw: %d\n", nPrimesFound);
+	int *newDst[nPrimesFound];
+	newDst = yeetZeros(dstData, N, nPrimesFound);
+	PrintDataArray(dstData, min(20, 400));
+
+	xil_printf("\n\rChecking Sw result: %s\n\r",
+			   CheckPrimes(dstData, srcData, N) ? "OK" : "Error");
+
+
+
+	xil_printf("\r\n----------------------------------------------------------------------\n\rHardware assisted primes\n\n\rConfiguring DMA...");
+	status = DMAConfig(XPAR_AXI_DMA_0_DEVICE_ID, &dmaInstDefs);
+	if (status != XST_SUCCESS)
+	{
+		xil_printf("\r\nConfiguration failed.");
+		return XST_FAILURE;
+	}
+	xil_printf("\r\nDMA running...\n");
+
+	// DMA and Hardware assisted
+	RestartPerformanceTimer();
+	status = XAxiDma_SimpleTransfer(&dmaInstDefs,(UINTPTR) dstData, N * sizeof(int),
+									XAXIDMA_DEVICE_TO_DMA);
+	status = XAxiDma_SimpleTransfer(&dmaInstDefs,(UINTPTR) srcData, N * sizeof(int),
+									XAXIDMA_DMA_TO_DEVICE);
+	if (status != XST_SUCCESS)
+	{
+		xil_printf("\r\nDMA transfer failed.");
+		return XST_FAILURE;
+	}
+	while ((XAxiDma_Busy(&dmaInstDefs, XAXIDMA_DEVICE_TO_DMA)) ||
+		   (XAxiDma_Busy(&dmaInstDefs, XAXIDMA_DMA_TO_DEVICE)))
+	{
+		/* Wait */
+	}
+
+	timeElapsed = StopAndGetPerformanceTimer();
+	xil_printf("\n\rExecution time: %d microseconds\n",
+			   timeElapsed / (XPAR_CPU_M_AXI_DP_FREQ_HZ / 1000000));
+	PrintDataArray(dstData, min(20, N));
+
+	nPrimesFound = countValuesNotZero(dstData, N);
+	xil_printf("\n\r Number of primes found Hw: %d\n", nPrimesFound);
+
+	xil_printf("\n\n\rChecking Hw result: %s\n\r",
+			   CheckPrimes(dstData, srcData, 4095) ? "OK" : "Error");
+
+	cleanup_platform();
+//	return XST_SUCCESS;
+	return 0;
+}

@@ -1,0 +1,23 @@
+Nothing to build in platform 'primesCountCop'
+
+22:44:20 **** Incremental Build of configuration Debug for project primes_count_app ****
+make all 
+'Building file: ../src/primes.c'
+'Invoking: MicroBlaze gcc compiler'
+mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/primes.o" -IC:/PrimesCount/vitis_workspace/primesCountCop/export/primesCountCop/sw/primesCountCop/standalone_microblaze_0/bspinclude/include -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"src/primes.d" -MT"src/primes.o" -o "src/primes.o" "../src/primes.c"
+'Finished building: ../src/primes.c'
+' '
+'Building target: primes_count_app.elf'
+'Invoking: MicroBlaze gcc linker'
+mb-gcc -Wl,-T -Wl,../src/lscript.ld -LC:/PrimesCount/vitis_workspace/primesCountCop/export/primesCountCop/sw/primesCountCop/standalone_microblaze_0/bsplib/lib -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "primes_count_app.elf"  ./src/helloworld.o ./src/platform.o ./src/primes.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: primes_count_app.elf'
+' '
+'Invoking: MicroBlaze Print Size'
+mb-size primes_count_app.elf  |tee "primes_count_app.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  20188	   1476	  49256	  70920	  11508	primes_count_app.elf
+'Finished building: primes_count_app.elf.size'
+' '
+22:44:21 **** Incremental Build of configuration Debug for project primes_count_app_system ****
+make all 
+Skipping SD card image generation. Reason: "The system project only has applications for microblaze processors."

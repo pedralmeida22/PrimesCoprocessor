@@ -1,0 +1,24 @@
+2021-06-19T22:43:01.080893800255-22:43:01 **** Incremental Build of configuration Debug for project xaxidma_example_simple_poll_1 ****
+000-make all 
+000-'Building file: ../src/xaxidma_example_simple_poll.c'
+000-'Invoking: MicroBlaze gcc compiler'
+000-mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/xaxidma_example_simple_poll.o" -IC:/PrimesCount/vitis_workspace/primesCountCop/export/primesCountCop/sw/primesCountCop/standalone_microblaze_0/bspinclude/include -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"src/xaxidma_example_simple_poll.d" -MT"src/xaxidma_example_simple_poll.o" -o "src/xaxidma_example_simple_poll.o" "../src/xaxidma_example_simple_poll.c"
+000/xaxidma_example_simple_poll_1/src/xaxidma_example_simple_poll.c86-1-1#warning CHECK FOR THE VALID DDR ADDRESS IN XPARAMETERS.H, DEFAULT SET TO 0x01000000 [-Wcpp]1-../src/xaxidma_example_simple_poll.c:86:2: warning: #warning CHECK FOR THE VALID DDR ADDRESS IN XPARAMETERS.H, DEFAULT SET TO 0x01000000 [-Wcpp]
+000-   86 | #warning CHECK FOR THE VALID DDR ADDRESS IN XPARAMETERS.H, \
+000-      |  ^~~~~~~
+000-'Finished building: ../src/xaxidma_example_simple_poll.c'
+000-' '
+000-'Building target: xaxidma_example_simple_poll_1.elf'
+000-'Invoking: MicroBlaze gcc linker'
+000-mb-gcc -Wl,-T -Wl,../src/lscript.ld -LC:/PrimesCount/vitis_workspace/primesCountCop/export/primesCountCop/sw/primesCountCop/standalone_microblaze_0/bsplib/lib -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections -o "xaxidma_example_simple_poll_1.elf"  ./src/xaxidma_example_simple_poll.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+000-'Finished building target: xaxidma_example_simple_poll_1.elf'
+000-' '
+000-'Invoking: MicroBlaze Print Size'
+000-mb-size xaxidma_example_simple_poll_1.elf  |tee "xaxidma_example_simple_poll_1.elf.size"
+000-   text	   data	    bss	    dec	    hex	filename
+000-   9636	    432	   4980	  15048	   3ac8	xaxidma_example_simple_poll_1.elf
+000-'Finished building: xaxidma_example_simple_poll_1.elf.size'
+000-' '
+00255-
+22:43:01 Build Finished (took 838ms)
+
