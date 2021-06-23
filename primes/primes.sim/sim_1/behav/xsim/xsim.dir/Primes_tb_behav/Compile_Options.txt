@@ -1,0 +1,1 @@
+-wto "e46df2614cec4801ab9b60e0bf8337f2" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "Primes_tb_behav" "xil_defaultlib.Primes_tb" -log "elaborate.log" 

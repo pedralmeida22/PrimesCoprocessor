@@ -1,0 +1,76 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Fri Jun 18 16:12:42 2021
+# Process ID: 18620
+# Current directory: C:/Users/pedra/Documents/PrimeNumbers/primes
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent18576 C:\Users\pedra\Documents\PrimeNumbers\primes\primes.xpr
+# Log file: C:/Users/pedra/Documents/PrimeNumbers/primes/vivado.log
+# Journal file: C:/Users/pedra/Documents/PrimeNumbers/primes\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/pedra/Documents/PrimeNumbers/primes/primes.xpr
+update_compile_order -fileset sources_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+launch_simulation
+source Primes_tb.tcl
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+close [ open C:/Users/pedra/Documents/PrimeNumbers/primes/primes.srcs/sources_1/new/checkPrimeCounter.vhd w ]
+add_files C:/Users/pedra/Documents/PrimeNumbers/primes/primes.srcs/sources_1/new/checkPrimeCounter.vhd
+update_compile_order -fileset sources_1
+close [ open C:/Users/pedra/Documents/PrimeNumbers/primes/primes.srcs/sources_1/new/CheckPrimesCount_tb.vhd w ]
+add_files C:/Users/pedra/Documents/PrimeNumbers/primes/primes.srcs/sources_1/new/CheckPrimesCount_tb.vhd
+update_compile_order -fileset sources_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top checkPrimeCounter_tb [current_fileset]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sources_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+close_sim
+launch_simulation
+source Primes_tb.tcl
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+close_sim
+launch_simulation
+source Primes_tb.tcl
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top checkPrimeCounter [current_fileset]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sources_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top checkPrimeCounter_tb [current_fileset]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sources_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top checkPrimeCounter_tb [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+launch_simulation
+launch_simulation
+close_sim

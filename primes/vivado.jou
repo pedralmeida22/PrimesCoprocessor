@@ -1,0 +1,35 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Sun Jun 20 16:47:08 2021
+# Process ID: 7280
+# Current directory: C:/Users/pedra/Documents/PrimeNumbers/primes
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent2328 C:\Users\pedra\Documents\PrimeNumbers\primes\primes.xpr
+# Log file: C:/Users/pedra/Documents/PrimeNumbers/primes/vivado.log
+# Journal file: C:/Users/pedra/Documents/PrimeNumbers/primes\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/pedra/Documents/PrimeNumbers/primes/primes.xpr
+update_compile_order -fileset sources_1
+launch_simulation
+source isPrime_tb.tcl
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+close_sim
+launch_simulation
+source isPrime_tb.tcl
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+close_sim
+launch_simulation
+source isPrime_tb.tcl
+close_sim
+launch_simulation
+source isPrime_tb.tcl
+close_sim

@@ -1,0 +1,7 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../primes.srcs/sources_1/new/isPrime.vhd" \
+"../../../../primes.srcs/sources_1/new/isPrime_tb.vhd" \
+
+# Do not sort compile order
+nosort
